@@ -1,0 +1,15 @@
+/* ==========================================================
+   DASHBOARD ROOT STYLESHEET (AGGREGATOR)
+   Masing-masing modul telah dipisah ke dalam src/styles/:
+   1. layout.css          -> Sidebar, Topbar, Breadcrumb, Tombol & Badge
+   2. dashboard.css       -> Ringkasan KPI, Program Saya, Aktivitas & Status
+   3. request-program.css -> Daftar Request, Form 1 (Mitra) & Form 2 (Assessment)
+   4. proposal.css        -> Pustaka Proposal, Unggah Berkas & Detail Proposal
+   ========================================================== */
+@import '../../styles/layout.css';
+@import '../../styles/dashboard.css';
+@import '../../styles/request-program.css';
+@import '../../styles/proposal.css';
+@import '../../styles/assessment.css';
+@import '../../styles/dss.css';
+@import '../../styles/monev.css';

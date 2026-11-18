@@ -1,0 +1,1008 @@
+/* ==========================================================
+   HALAMAN APPROVAL PROPOSAL (DIREKTUR)
+   Desain presisi 100% konsisten dengan mockup Relawan Nusantara
+   ========================================================== */
+
+.app-prop-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  padding-bottom: 30px;
+}
+
+/* ==========================================================
+   1. HEADER SECTION
+   ========================================================== */
+.app-prop-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.app-prop-title-box h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--db-text, #172324);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.app-prop-title-box p {
+  font-size: 13px;
+  color: var(--db-muted, #697879);
+  margin: 6px 0 0;
+}
+
+.app-prop-period-btn {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--db-border, #dfe6e7);
+  background: #ffffff;
+  color: #3b4b4c;
+  font-size: 12.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+  transition: all 0.14s ease;
+}
+
+.app-prop-period-btn:hover {
+  border-color: var(--db-teal, #0b8a80);
+  color: var(--db-teal, #0b8a80);
+}
+
+/* ==========================================================
+   2. KPI CARDS (4 COLUMNS)
+   ========================================================== */
+.app-prop-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.app-prop-kpi-card {
+  background: #ffffff;
+  border: 1px solid var(--db-border, #dfe6e7);
+  border-radius: 12px;
+  padding: 18px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.app-prop-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 40, 40, 0.06);
+}
+
+.app-prop-kpi-card.selected {
+  border-color: var(--db-teal, #0b8a80);
+  box-shadow: 0 0 0 2.5px rgba(11, 138, 128, 0.12);
+}
+
+/* Card 1 Hero Teal (Dalam Tinjauan) */
+.app-prop-kpi-card.hero-teal {
+  background: #078780;
+  border-color: #078780;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(7, 135, 128, 0.22);
+}
+
+.app-prop-kpi-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-prop-kpi-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #556667;
+}
+
+.app-prop-kpi-card.hero-teal .app-prop-kpi-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.app-prop-kpi-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  color: #79898a;
+}
+
+.app-prop-kpi-card.hero-teal .app-prop-kpi-icon {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.app-prop-kpi-num {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--db-text, #172324);
+  letter-spacing: -0.02em;
+}
+
+.app-prop-kpi-card.hero-teal .app-prop-kpi-num {
+  color: #ffffff;
+}
+
+.app-prop-kpi-desc {
+  font-size: 11.5px;
+  color: #79898a;
+}
+
+.app-prop-kpi-card.hero-teal .app-prop-kpi-desc {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ==========================================================
+   3. MAIN TABLE CARD: DAFTAR PROPOSAL
+   ========================================================== */
+.app-prop-table-card {
+  background: #ffffff;
+  border: 1px solid var(--db-border, #dfe6e7);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+  overflow: hidden;
+}
+
+.app-prop-card-head {
+  padding: 20px 22px 14px;
+}
+
+.app-prop-card-head h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--db-text, #172324);
+  margin: 0;
+}
+
+.app-prop-card-head p {
+  font-size: 12px;
+  color: var(--db-muted, #79898a);
+  margin: 4px 0 0;
+}
+
+/* Tabs Bar */
+.app-prop-tabs-bar {
+  display: flex;
+  align-items: center;
+  padding: 0 22px 14px;
+  border-bottom: 1px solid var(--db-border-light, #edf1f1);
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.app-prop-tab-pill {
+  border: 0;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #556667;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.14s ease;
+  white-space: nowrap;
+}
+
+.app-prop-tab-pill:hover {
+  color: var(--db-text, #172324);
+  background: #edf3f3;
+}
+
+.app-prop-tab-pill.active {
+  background: #078780;
+  color: #ffffff;
+}
+
+/* Toolbar (Search + 2 Dropdowns) */
+.app-prop-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px;
+  gap: 14px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--db-border-light, #edf1f1);
+}
+
+.app-prop-search-box {
+  flex: 1 1 320px;
+  max-width: 520px;
+  height: 38px;
+  border: 1px solid var(--db-border, #dfe6e7);
+  background: #ffffff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 10px;
+  color: #8f9d9e;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.app-prop-search-box:focus-within {
+  border-color: var(--db-teal, #0b8a80);
+  box-shadow: 0 0 0 3px rgba(11, 138, 128, 0.1);
+}
+
+.app-prop-search-box input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  font-size: 12px;
+  color: var(--db-text, #172324);
+  background: transparent;
+}
+
+.app-prop-filters-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.app-prop-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.app-prop-dropdown svg.icon-lead {
+  position: absolute;
+  left: 10px;
+  color: #7b8c8d;
+  pointer-events: none;
+}
+
+.app-prop-dropdown select {
+  height: 38px;
+  border: 1px solid var(--db-border, #dfe6e7);
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 0 28px 0 32px;
+  font-size: 12px;
+  color: #4a5a5b;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236f7d7e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 14px;
+}
+
+.app-prop-dropdown select:focus {
+  border-color: var(--db-teal, #0b8a80);
+}
+
+/* Table */
+.app-prop-table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.app-prop-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.app-prop-table th {
+  background: #f8fafa;
+  border-bottom: 1px solid var(--db-border, #dfe6e7);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #6a797a;
+  padding: 12px 22px;
+  white-space: nowrap;
+}
+
+.app-prop-table td {
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--db-border-light, #edf1f1);
+  vertical-align: middle;
+  font-size: 12.5px;
+}
+
+.app-prop-row-clickable {
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.app-prop-row-clickable:hover {
+  background: #f9fbfb;
+}
+
+.app-prop-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Cell typography */
+.app-prop-doc-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-prop-doc-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--db-text, #172324);
+}
+
+.app-prop-doc-meta {
+  font-size: 11.5px;
+  color: var(--db-muted, #79898a);
+}
+
+.app-prop-loc-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-prop-loc-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--db-text, #172324);
+}
+
+.app-prop-loc-prov {
+  font-size: 11.5px;
+  color: var(--db-muted, #79898a);
+}
+
+/* File Chip */
+.app-prop-file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-prop-file-icon {
+  color: #078780;
+  display: grid;
+  place-items: center;
+}
+
+.app-prop-file-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.app-prop-file-text strong {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #172324;
+}
+
+.app-prop-file-text small {
+  font-size: 10.5px;
+  color: #79898a;
+}
+
+/* Status Pill */
+.app-prop-status-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-prop-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.app-prop-status-pill.status-review {
+  background: #e9f2fd;
+  color: #2b6cb0;
+}
+
+.app-prop-status-pill.status-revision {
+  background: #fef7e0;
+  color: #b06000;
+}
+
+.app-prop-status-pill.status-approved {
+  background: #e6f6ec;
+  color: #1f8448;
+}
+
+.app-prop-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.app-prop-status-hint {
+  font-size: 10.5px;
+  color: #8b999a;
+}
+
+/* Action button in table */
+.app-prop-btn-action {
+  border: 0;
+  background: transparent;
+  color: var(--db-teal, #0b8a80);
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.12s ease;
+}
+
+.app-prop-btn-action:hover {
+  background: #e3f4f1;
+  color: var(--db-teal-dark, #086b63);
+}
+
+/* Pagination */
+.app-prop-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px;
+  border-top: 1px solid var(--db-border-light, #edf1f1);
+  background: #ffffff;
+  font-size: 12px;
+  color: var(--db-muted, #79898a);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.app-prop-pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ==========================================================
+   4. BOTTOM BANNER CARD
+   ========================================================== */
+.app-prop-banner-card {
+  background: #ffffff;
+  border: 1px solid var(--db-border, #dfe6e7);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+  flex-wrap: wrap;
+}
+
+.app-prop-banner-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1 1 500px;
+}
+
+.app-prop-shield-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #e3f4f1;
+  color: #078780;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.app-prop-banner-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.app-prop-banner-content strong {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--db-text, #172324);
+}
+
+.app-prop-banner-content p {
+  font-size: 12px;
+  color: #556667;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.app-prop-banner-content small {
+  font-size: 11px;
+  color: #8b999a;
+}
+
+.app-prop-banner-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.app-prop-banner-step {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--db-teal, #0b8a80);
+}
+
+.app-prop-banner-note {
+  font-size: 11px;
+  color: #8b999a;
+  max-width: 320px;
+}
+
+/* ==========================================================
+   5. DETAIL / REVIEW VIEW (IMAGE 2)
+   ========================================================== */
+.app-prop-detail-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.app-prop-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--db-teal, #0b8a80);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.app-prop-back-link:hover {
+  text-decoration: underline;
+}
+
+.app-prop-header-card {
+  background: #ffffff;
+  border: 1px solid var(--db-border, #dfe6e7);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+}
+
+.app-prop-header-card-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.app-prop-doc-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  background: #e3f4f1;
+  color: #078780;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.app-prop-header-card-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #556667;
+}
+
+/* Detail 2 Columns Grid */
+.app-prop-detail-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Paper Document Frame (Left) */
+.app-prop-paper-container {
+  background: #ffffff;
+  border: 1px solid var(--db-border, #dfe6e7);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+  overflow: hidden;
+}
+
+.app-prop-paper-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px;
+  border-bottom: 1px solid #edf1f1;
+}
+
+.app-prop-paper-header h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #172324;
+  margin: 0;
+}
+
+.app-prop-paper-header small {
+  font-size: 11.5px;
+  color: #79898a;
+  display: block;
+}
+
+.app-prop-paper-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 22px;
+  background: #f8fafb;
+  border-bottom: 1px solid #edf1f1;
+  font-size: 12px;
+  color: #556667;
+}
+
+.app-prop-paper-sheet {
+  padding: 32px 36px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #2c3c3d;
+}
+
+.app-prop-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #078780;
+  padding-bottom: 8px;
+}
+
+.app-prop-sheet-org {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #078780;
+}
+
+.app-prop-sheet-pill-sample {
+  font-size: 10px;
+  color: #8b999a;
+}
+
+.app-prop-sheet-title-box {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.app-prop-sheet-category {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #078780;
+  text-transform: uppercase;
+}
+
+.app-prop-sheet-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #172324;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.app-prop-sheet-code {
+  font-size: 11.5px;
+  color: #79898a;
+}
+
+.app-prop-sheet-meta-box {
+  background: #fbfdfd;
+  border: 1px solid #edf1f1;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.app-prop-sheet-section h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #172324;
+  margin: 0 0 6px 0;
+}
+
+.app-prop-sheet-section p {
+  margin: 0;
+  color: #4a5a5b;
+}
+
+/* Sheet Table */
+.app-prop-sheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 11.5px;
+}
+
+.app-prop-sheet-table th {
+  background: #f8fafa;
+  border: 1px solid #dfe6e7;
+  padding: 6px 10px;
+  color: #6a797a;
+  font-weight: 600;
+  text-align: left;
+}
+
+.app-prop-sheet-table td {
+  border: 1px solid #dfe6e7;
+  padding: 8px 10px;
+  color: #3b4b4c;
+}
+
+.app-prop-sheet-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #edf1f1;
+  padding-top: 14px;
+  font-size: 11px;
+  color: #8b999a;
+}
+
+.app-prop-paper-caption {
+  padding: 10px 22px;
+  background: #f8fafb;
+  border-top: 1px solid #edf1f1;
+  font-size: 11px;
+  color: #8b999a;
+  text-align: center;
+}
+
+/* Right Column Cards */
+.app-prop-detail-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app-prop-side-card {
+  background: #ffffff;
+  border: 1px solid var(--db-border, #dfe6e7);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.app-prop-side-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #172324;
+  margin: 0;
+}
+
+.app-prop-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.app-prop-info-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  font-size: 12px;
+  gap: 12px;
+}
+
+.app-prop-info-row span:first-child {
+  color: #79898a;
+  flex-shrink: 0;
+}
+
+.app-prop-info-row strong {
+  color: #172324;
+  text-align: right;
+  font-weight: 600;
+}
+
+/* Decision Box */
+.app-prop-decision-desc {
+  font-size: 12px;
+  color: #556667;
+  margin: 0;
+}
+
+.app-prop-textarea-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: #172324;
+}
+
+.app-prop-req-text {
+  font-size: 11px;
+  color: #c97b10;
+  font-weight: 600;
+}
+
+.app-prop-textarea {
+  width: 100%;
+  border: 1px solid #dfe6e7;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #172324;
+  outline: none;
+  resize: vertical;
+  min-height: 90px;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.app-prop-textarea:focus {
+  border-color: #078780;
+}
+
+.app-prop-char-count {
+  font-size: 11px;
+  color: #8b999a;
+  text-align: right;
+}
+
+.app-prop-note-caption {
+  font-size: 11px;
+  color: #79898a;
+  margin: 0;
+}
+
+.app-prop-decision-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-prop-btn-revisi {
+  flex: 1;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid #dfe6e7;
+  background: #ffffff;
+  color: #3b4b4c;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.app-prop-btn-revisi:hover {
+  border-color: #c97b10;
+  color: #c97b10;
+  background: #fefcf7;
+}
+
+.app-prop-btn-approve {
+  flex: 1;
+  height: 40px;
+  border-radius: 8px;
+  border: 0;
+  background: #078780;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(7, 135, 128, 0.2);
+  transition: all 0.14s ease;
+}
+
+.app-prop-btn-approve:hover {
+  background: #056b66;
+  transform: translateY(-1px);
+}
+
+.app-prop-decision-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #f8fafb;
+  border: 1px solid #edf1f1;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 11px;
+  color: #697879;
+  line-height: 1.45;
+}
+
+/* Focus Check Card */
+.app-prop-focus-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #078780;
+}
+
+.app-prop-focus-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11.5px;
+  color: #556667;
+  line-height: 1.45;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .app-prop-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .app-prop-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .app-prop-kpis {
+    grid-template-columns: 1fr;
+  }
+}
+

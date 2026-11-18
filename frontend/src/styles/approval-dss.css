@@ -1,0 +1,1514 @@
+/* ==========================================================
+   HALAMAN APPROVAL DSS (RAB) — DIREKTUR
+   Desain presisi 100% konsisten dengan mockup Relawan Nusantara
+   ========================================================== */
+
+.app-dss-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  padding-bottom: 30px;
+}
+
+/* ==========================================================
+   1. HEADER SECTION
+   ========================================================== */
+.app-dss-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.app-dss-title-box h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--db-text, #172324);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.app-dss-title-box p {
+  font-size: 13px;
+  color: var(--db-muted, #697879);
+  margin: 6px 0 0;
+}
+
+.app-dss-period-btn {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--db-border, #dfe6e7);
+  background: #ffffff;
+  color: #3b4b4c;
+  font-size: 12.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+  transition: all 0.14s ease;
+}
+
+.app-dss-period-btn:hover {
+  border-color: var(--db-teal, #0b8a80);
+  color: var(--db-teal, #0b8a80);
+}
+
+/* ==========================================================
+   2. KPI CARDS (4 COLUMNS)
+   ========================================================== */
+.app-dss-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.app-dss-kpi-card {
+  background: #ffffff;
+  border: 1px solid var(--db-border, #dfe6e7);
+  border-radius: 12px;
+  padding: 18px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.app-dss-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 40, 40, 0.06);
+}
+
+.app-dss-kpi-card.selected {
+  border-color: var(--db-teal, #0b8a80);
+  box-shadow: 0 0 0 2.5px rgba(11, 138, 128, 0.12);
+}
+
+/* Card 1 Hero Teal (Dalam Penelaahan) */
+.app-dss-kpi-card.hero-teal {
+  background: #078780;
+  border-color: #078780;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(7, 135, 128, 0.22);
+}
+
+.app-dss-kpi-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-dss-kpi-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--db-muted, #697879);
+}
+
+.app-dss-kpi-card.hero-teal .app-dss-kpi-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.app-dss-kpi-icon {
+  color: #92a1a2;
+}
+
+.app-dss-kpi-card.hero-teal .app-dss-kpi-icon {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.app-dss-kpi-val {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--db-text, #172324);
+  letter-spacing: -0.02em;
+}
+
+.app-dss-kpi-card.hero-teal .app-dss-kpi-val {
+  color: #ffffff;
+}
+
+.app-dss-kpi-sub {
+  font-size: 12px;
+  color: #839394;
+}
+
+.app-dss-kpi-card.hero-teal .app-dss-kpi-sub {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* ==========================================================
+   3. TABLE CARD CONTAINER & TOOLBAR
+   ========================================================== */
+.app-dss-card {
+  background: #ffffff;
+  border: 1px solid var(--db-border, #dfe6e7);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+  overflow: hidden;
+}
+
+.app-dss-card-header {
+  padding: 20px 24px 14px;
+}
+
+.app-dss-card-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #172324;
+  margin: 0;
+}
+
+.app-dss-card-header p {
+  font-size: 12.5px;
+  color: #79898a;
+  margin: 4px 0 0;
+}
+
+/* Tabs */
+.app-dss-tabs-wrap {
+  padding: 0 24px;
+  border-bottom: 1px solid #edf1f2;
+}
+
+.app-dss-tabs {
+  display: flex;
+  gap: 20px;
+}
+
+.app-dss-tab-btn {
+  background: none;
+  border: none;
+  padding: 10px 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #718283;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.14s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app-dss-tab-btn:hover {
+  color: #172324;
+}
+
+.app-dss-tab-btn.active {
+  color: #078780;
+}
+
+.app-dss-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2.5px;
+  background: #078780;
+  border-radius: 2px 2px 0 0;
+}
+
+/* Toolbar search & filters */
+.app-dss-toolbar {
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fafcfc;
+  border-bottom: 1px solid #edf1f2;
+  flex-wrap: wrap;
+}
+
+.app-dss-search-wrap {
+  flex: 1;
+  min-width: 260px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.app-dss-search-wrap svg {
+  position: absolute;
+  left: 12px;
+  color: #92a1a2;
+}
+
+.app-dss-search-input {
+  width: 100%;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid #dce4e5;
+  background: #ffffff;
+  padding: 0 14px 0 38px;
+  font-size: 13px;
+  color: #172324;
+  outline: none;
+  transition: border-color 0.14s ease;
+}
+
+.app-dss-search-input:focus {
+  border-color: #078780;
+}
+
+.app-dss-filter-select {
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid #dce4e5;
+  background: #ffffff;
+  padding: 0 12px;
+  font-size: 12.5px;
+  color: #3b4b4c;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  outline: none;
+}
+
+.app-dss-filter-select:hover {
+  border-color: #078780;
+}
+
+/* ==========================================================
+   4. DATA TABLE
+   ========================================================== */
+.app-dss-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.app-dss-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.app-dss-table th {
+  padding: 12px 20px;
+  background: #fafcfc;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #79898a;
+  border-bottom: 1px solid #edf1f2;
+  white-space: nowrap;
+}
+
+.app-dss-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f4f4;
+  vertical-align: middle;
+  font-size: 13px;
+  color: #172324;
+}
+
+.app-dss-table tr:last-child td {
+  border-bottom: none;
+}
+
+.app-dss-table tbody tr:hover td {
+  background: #fbfdfd;
+}
+
+/* Cell typography */
+.app-dss-doc-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #172324;
+  display: block;
+}
+
+.app-dss-doc-code {
+  font-size: 11.5px;
+  color: #79898a;
+  margin-top: 2px;
+  display: block;
+}
+
+.app-dss-loc-city {
+  font-weight: 500;
+  color: #172324;
+  display: block;
+}
+
+.app-dss-loc-prov {
+  font-size: 11.5px;
+  color: #79898a;
+  display: block;
+  margin-top: 2px;
+}
+
+.app-dss-nominal {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #172324;
+  letter-spacing: -0.01em;
+}
+
+.app-dss-file-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-dss-file-cell svg {
+  color: #92a1a2;
+  flex-shrink: 0;
+}
+
+.app-dss-file-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #2b3b3c;
+  display: block;
+}
+
+.app-dss-file-size {
+  font-size: 11.5px;
+  color: #79898a;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Status Badges */
+.app-dss-status-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.app-dss-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.app-dss-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Dalam telaah */
+.app-dss-status-pill.dalam-telaah {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+.app-dss-status-pill.dalam-telaah .app-dss-status-dot {
+  background: #0284c7;
+}
+
+/* Perlu revisi */
+.app-dss-status-pill.perlu-revisi {
+  background: #fef3c7;
+  color: #b45309;
+}
+.app-dss-status-pill.perlu-revisi .app-dss-status-dot {
+  background: #d97706;
+}
+
+/* Disetujui */
+.app-dss-status-pill.disetujui {
+  background: #dcfce7;
+  color: #15803d;
+}
+.app-dss-status-pill.disetujui .app-dss-status-dot {
+  background: #16a34a;
+}
+
+.app-dss-status-sub {
+  font-size: 11px;
+  color: #79898a;
+}
+
+/* Action links */
+.app-dss-action-btn {
+  background: none;
+  border: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #078780;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.12s ease;
+}
+
+.app-dss-action-btn:hover {
+  background: #eef8f7;
+  color: #056661;
+}
+
+/* Table footer pagination */
+.app-dss-pagination {
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #edf1f2;
+  font-size: 12.5px;
+  color: #79898a;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.app-dss-pages {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app-dss-page-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #dfe6e7;
+  background: #ffffff;
+  color: #3b4b4c;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.14s ease;
+}
+
+.app-dss-page-btn:hover:not(:disabled) {
+  border-color: #078780;
+  color: #078780;
+}
+
+.app-dss-page-btn.active {
+  background: #078780;
+  border-color: #078780;
+  color: #ffffff;
+}
+
+.app-dss-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ==========================================================
+   5. BOTTOM CONTEXT CARD
+   ========================================================== */
+.app-dss-context-card {
+  background: #f7faf9;
+  border: 1px solid #dbe8e6;
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.app-dss-context-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.app-dss-context-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #172324;
+}
+
+.app-dss-context-sub {
+  font-size: 11.5px;
+  color: #79898a;
+}
+
+.app-dss-context-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.app-dss-context-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-dss-context-item span.label {
+  font-size: 11px;
+  color: #79898a;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.app-dss-context-item strong.val {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #172324;
+}
+
+.app-dss-context-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 10px;
+  border-top: 1px dashed #d1e2e0;
+}
+
+.app-dss-context-note {
+  font-size: 12px;
+  color: #4b5d5e;
+  line-height: 1.5;
+}
+
+.app-dss-context-tip {
+  font-size: 11.5px;
+  color: #078780;
+  font-weight: 500;
+}
+
+/* ==========================================================
+   6. DETAIL APPROVAL VIEW (IMAGE 2)
+   ========================================================== */
+.app-dss-detail-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  padding-bottom: 30px;
+}
+
+.app-dss-back-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-dss-back-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: #078780;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.app-dss-back-link:hover {
+  text-decoration: underline;
+}
+
+.app-dss-detail-title-box h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #172324;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.app-dss-detail-title-box p {
+  font-size: 13px;
+  color: #697879;
+  margin: 4px 0 0;
+}
+
+/* Header Summary Card */
+.app-dss-summary-card {
+  background: #ffffff;
+  border: 1px solid #dfe6e7;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+}
+
+.app-dss-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.app-dss-summary-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #eef8f7;
+  color: #078780;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.app-dss-summary-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #172324;
+}
+
+.app-dss-summary-sub {
+  font-size: 12.5px;
+  color: #79898a;
+  margin-top: 2px;
+}
+
+.app-dss-summary-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: right;
+  color: #556667;
+  font-size: 12.5px;
+}
+
+/* Two columns layout (Paper Preview & Action Cards) */
+.app-dss-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 370px;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .app-dss-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left Column: Pratinjau Dokumen */
+.app-dss-preview-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.app-dss-preview-card {
+  background: #eaeff0;
+  border: 1px solid #dce4e5;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-dss-preview-topbar {
+  background: #ffffff;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #dfe6e7;
+}
+
+.app-dss-preview-meta strong {
+  font-size: 14px;
+  color: #172324;
+  display: block;
+}
+
+.app-dss-preview-meta small {
+  font-size: 11.5px;
+  color: #79898a;
+  display: block;
+  margin-top: 2px;
+}
+
+.app-dss-unduh-btn {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #dfe6e7;
+  background: #ffffff;
+  color: #172324;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.app-dss-unduh-btn:hover {
+  border-color: #078780;
+  color: #078780;
+}
+
+.app-dss-preview-controls {
+  padding: 8px 20px;
+  background: #f4f7f7;
+  border-bottom: 1px solid #dfe6e7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #697879;
+}
+
+.app-dss-ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-dss-ctrl-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  color: #697879;
+  cursor: pointer;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-dss-ctrl-btn:hover {
+  color: #172324;
+}
+
+/* Paper Document Canvas */
+.app-dss-paper-viewport {
+  padding: 24px 28px;
+  display: flex;
+  justify-content: center;
+  background: #e3e9ea;
+}
+
+.app-dss-paper {
+  background: #ffffff;
+  width: 100%;
+  max-width: 720px;
+  box-shadow: 0 8px 28px rgba(23, 35, 36, 0.1);
+  border-radius: 4px;
+  padding: 40px 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.app-dss-paper-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-dss-brand-name {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #078780;
+}
+
+.app-dss-brand-badge {
+  font-size: 10.5px;
+  background: #f0f4f4;
+  color: #697879;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.app-dss-paper-rule {
+  height: 2px;
+  background: #078780;
+  width: 100%;
+}
+
+.app-dss-paper-category {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #0b8a80;
+  text-transform: uppercase;
+}
+
+.app-dss-paper-heading {
+  font-size: 22px;
+  font-weight: 800;
+  color: #172324;
+  letter-spacing: -0.02em;
+  margin: 4px 0 2px;
+}
+
+.app-dss-paper-date {
+  font-size: 12px;
+  color: #79898a;
+}
+
+.app-dss-paper-infobox {
+  background: #f7faf9;
+  border: 1px solid #e1eceb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.app-dss-infobox-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-dss-infobox-item span.lbl {
+  font-size: 11px;
+  color: #79898a;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.app-dss-infobox-item strong.val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #172324;
+}
+
+/* Cost Breakdown Table inside Paper */
+.app-dss-paper-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.app-dss-paper-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #172324;
+}
+
+.app-dss-paper-section-unit {
+  font-size: 11px;
+  color: #79898a;
+}
+
+.app-dss-cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.app-dss-cost-table th {
+  padding: 8px 10px;
+  background: #f8faf9;
+  border-top: 1px solid #dfe6e7;
+  border-bottom: 1px solid #dfe6e7;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #697879;
+}
+
+.app-dss-cost-table td {
+  padding: 10px 10px;
+  border-bottom: 1px solid #edf1f2;
+  color: #2b3b3c;
+}
+
+.app-dss-cost-table tr.total-row {
+  background: #e6f5f3;
+}
+
+.app-dss-cost-table tr.total-row td {
+  border-top: 1.5px solid #078780;
+  border-bottom: 1.5px solid #078780;
+  font-weight: 800;
+  color: #078780;
+  font-size: 13.5px;
+}
+
+/* Terbilang Box */
+.app-dss-terbilang-box {
+  background: #fafcfb;
+  border: 1px solid #e5eded;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-dss-terbilang-box span.lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: #79898a;
+}
+
+.app-dss-terbilang-box p.text {
+  margin: 0;
+  font-style: italic;
+  color: #172324;
+}
+
+/* Catatan Anggaran */
+.app-dss-paper-catatan {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11.5px;
+  color: #697879;
+  line-height: 1.5;
+}
+
+.app-dss-paper-catatan strong {
+  color: #172324;
+  font-size: 12px;
+}
+
+.app-dss-paper-footer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #edf1f2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #92a1a2;
+}
+
+.app-dss-preview-caption {
+  font-size: 11.5px;
+  color: #79898a;
+  text-align: center;
+}
+
+/* Right Column: Actions & Details */
+.app-dss-side-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app-dss-side-card {
+  background: #ffffff;
+  border: 1px solid #dfe6e7;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.02);
+}
+
+.app-dss-side-card h3 {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #172324;
+  margin: 0;
+}
+
+/* Amount Highlight */
+.app-dss-amount-box {
+  background: #f7faf9;
+  border: 1px solid #dcece9;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-dss-amount-box span.lbl {
+  font-size: 11.5px;
+  color: #79898a;
+}
+
+.app-dss-amount-box strong.val {
+  font-size: 24px;
+  font-weight: 800;
+  color: #078780;
+  letter-spacing: -0.02em;
+}
+
+.app-dss-kv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid #edf1f2;
+  padding-top: 12px;
+}
+
+.app-dss-kv-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+  gap: 10px;
+}
+
+.app-dss-kv-item span.k {
+  color: #79898a;
+  flex-shrink: 0;
+}
+
+.app-dss-kv-item strong.v {
+  font-weight: 600;
+  color: #172324;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* Decision Box */
+.app-dss-decision-sub {
+  font-size: 12.5px;
+  color: #697879;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.app-dss-notes-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: #172324;
+}
+
+.app-dss-notes-label span.req {
+  color: #d97706;
+  font-size: 11px;
+}
+
+.app-dss-textarea-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-dss-textarea {
+  width: 100%;
+  height: 90px;
+  border: 1px solid #dce4e5;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: #172324;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.14s ease;
+  box-sizing: border-box;
+}
+
+.app-dss-textarea:focus {
+  border-color: #078780;
+}
+
+.app-dss-char-count {
+  font-size: 11px;
+  color: #92a1a2;
+  text-align: right;
+}
+
+.app-dss-notes-hint {
+  font-size: 11px;
+  color: #79898a;
+  margin: 0;
+}
+
+.app-dss-decision-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.app-dss-btn-revisi {
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid #dfe6e7;
+  background: #ffffff;
+  color: #3b4b4c;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.app-dss-btn-revisi:hover:not(:disabled) {
+  border-color: #b45309;
+  color: #b45309;
+  background: #fffbeb;
+}
+
+.app-dss-btn-approve {
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  background: #078780;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.14s ease;
+  box-shadow: 0 2px 6px rgba(7, 135, 128, 0.25);
+}
+
+.app-dss-btn-approve:hover:not(:disabled) {
+  background: #056661;
+}
+
+.app-dss-btn-approve:disabled,
+.app-dss-btn-revisi:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.app-dss-decision-notice {
+  background: #f7faf9;
+  border: 1px solid #dbe8e6;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 11.5px;
+  color: #556667;
+  line-height: 1.45;
+}
+
+/* Fokus Peninjauan */
+.app-dss-fokus-card {
+  background: #fbfdfd;
+  border: 1px solid #dce8e7;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.app-dss-fokus-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #078780;
+}
+
+.app-dss-fokus-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.app-dss-fokus-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: #4b5d5e;
+  line-height: 1.45;
+}
+
+.app-dss-fokus-item span.star {
+  color: #078780;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+
+/* ==========================================================
+   DOCUMENT VIEWER STYLES
+   ========================================================== */
+.doc-viewer-container {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid var(--db-border, #dfe6e7);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 40, 40, 0.04);
+}
+
+.doc-viewer-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #fbfdfd;
+  border-bottom: 1px solid var(--db-border, #dfe6e7);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.doc-viewer-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.doc-viewer-meta small {
+  font-size: 11.5px;
+  color: var(--db-muted, #79898a);
+}
+
+.doc-viewer-filename {
+  font-size: 14px;
+  font-weight: 700;
+  color: #172324;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 440px;
+}
+
+.doc-viewer-badge-ext {
+  display: inline-block;
+  padding: 2px 7px;
+  background: #078780;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 700;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.doc-viewer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 18px;
+  background: #f4f7f7;
+  border-bottom: 1px solid var(--db-border, #dfe6e7);
+  font-size: 12px;
+  color: #556667;
+}
+
+.doc-viewer-ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.doc-viewer-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.doc-viewer-tab-btn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #dfe6e7;
+  background: #ffffff;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #556667;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.doc-viewer-tab-btn.active {
+  background: #078780;
+  color: #ffffff;
+  border-color: #078780;
+}
+
+.doc-viewer-body {
+  padding: 24px;
+  background: #eef2f3;
+  min-height: 540px;
+  max-height: 780px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.doc-viewer-body.fallback-paper {
+  background: #f0f4f4;
+  padding: 20px;
+}
+
+.doc-viewer-paper {
+  background: #ffffff;
+  width: 100%;
+  max-width: 820px;
+  min-height: 600px;
+  padding: 40px 48px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  transition: transform 0.12s ease;
+}
+
+.doc-viewer-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 400px;
+  color: #687879;
+  font-size: 13px;
+}
+
+.doc-viewer-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #dfe6e7;
+  border-top-color: #078780;
+  border-radius: 50%;
+  animation: docViewerSpin 0.8s linear infinite;
+}
+
+@keyframes docViewerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.doc-viewer-pdf-frame {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.doc-viewer-image-wrap {
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.doc-viewer-docx-content {
+  color: #24292e;
+  line-height: 1.65;
+  font-size: 13.5px;
+}
+
+.doc-viewer-docx-heading {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f1f21;
+  margin: 18px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1.5px solid #078780;
+}
+
+.doc-viewer-docx-paragraph {
+  margin: 0 0 12px;
+  text-align: justify;
+}
+
+.doc-viewer-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin: 14px 0;
+}
+
+.doc-viewer-docx-table,
+.doc-viewer-xlsx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #ffffff;
+}
+
+.doc-viewer-docx-table th,
+.doc-viewer-docx-table td,
+.doc-viewer-xlsx-table th,
+.doc-viewer-xlsx-table td {
+  border: 1px solid #d5dede;
+  padding: 7px 10px;
+  text-align: left;
+}
+
+.doc-viewer-docx-table th,
+.doc-viewer-xlsx-table th {
+  background: #f0f7f6;
+  color: #078780;
+  font-weight: 700;
+}
+
+.doc-viewer-xlsx-table .row-num {
+  background: #f7faf9;
+  color: #8b999a;
+  font-size: 11px;
+  text-align: center;
+  width: 38px;
+}
+
+.doc-viewer-text-content {
+  font-family: Consolas, Monaco, monospace;
+  font-size: 12px;
+  color: #24292e;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.doc-viewer-fallback-download {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 420px;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 8px;
+  max-width: 520px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.doc-viewer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  background: #ffffff;
+  border-top: 1px solid var(--db-border, #dfe6e7);
+  font-size: 11px;
+  color: #8b999a;
+}
+
+.doc-viewer-notice-empty {
+  margin-top: 24px;
+  padding: 10px 14px;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #92400e;
+}
