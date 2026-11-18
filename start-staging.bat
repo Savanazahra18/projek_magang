@@ -1,4 +1,5 @@
 @echo off
+cd /d "%~dp0"
 title MADIPRO - 1-Click Staging All-in-One Launcher
 color 0B
 
@@ -30,7 +31,7 @@ timeout /t 3 /nobreak >nul
 
 :: 3. Jalankan Cloudflare Tunnel di Window Baru
 echo [3/3] Menjalankan Cloudflare Live Staging Tunnel...
-start "MADIPRO Live Public Tunnel (Staging Link)" cmd /k "echo Menghubungkan port 3001 ke Cloudflare Tunnel... && npx cloudflared tunnel --url http://localhost:3001"
+start "MADIPRO Live Public Tunnel (Staging Link)" cmd /k "echo Menghubungkan port 3001 ke Cloudflare Tunnel... && npx -y cloudflared tunnel --url http://localhost:3001"
 
 echo.
 echo ========================================================

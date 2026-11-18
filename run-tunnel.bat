@@ -20,14 +20,14 @@ if "%choice%"=="2" (
     echo Menjalankan Localtunnel pada port 3001...
     echo Catatan: Buka link lalu jika diminta password, buka https://loca.lt/mytunnelpassword
     echo.
-    npx localtunnel --port 3001
+    npx -y localtunnel --port 3001
 ) else (
     echo.
     echo Menjalankan Cloudflare Tunnel pada port 3001...
     echo Tunggu beberapa detik hingga muncul link https://....trycloudflare.com
     echo Link tersebut siap Anda bagikan ke mentor/stakeholder!
     echo.
-    npx cloudflared tunnel --url http://localhost:3001
+    npx -y cloudflared tunnel --url http://localhost:3001
 )
 
 pause
