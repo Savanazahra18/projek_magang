@@ -681,6 +681,33 @@ def init_db(app):
                     ALTER TABLE dss_evaluations ADD COLUMN file_url TEXT;
                 EXCEPTION WHEN duplicate_column THEN END;
                 BEGIN
+                    ALTER TABLE dss_evaluations ADD COLUMN disbursement_status VARCHAR(50) DEFAULT 'Menunggu Pencairan';
+                EXCEPTION WHEN duplicate_column THEN END;
+                BEGIN
+                    ALTER TABLE dss_evaluations ADD COLUMN source_bank VARCHAR(255);
+                EXCEPTION WHEN duplicate_column THEN END;
+                BEGIN
+                    ALTER TABLE dss_evaluations ADD COLUMN recipient_bank VARCHAR(255);
+                EXCEPTION WHEN duplicate_column THEN END;
+                BEGIN
+                    ALTER TABLE dss_evaluations ADD COLUMN transfer_ref VARCHAR(100);
+                EXCEPTION WHEN duplicate_column THEN END;
+                BEGIN
+                    ALTER TABLE dss_evaluations ADD COLUMN transfer_date VARCHAR(50);
+                EXCEPTION WHEN duplicate_column THEN END;
+                BEGIN
+                    ALTER TABLE dss_evaluations ADD COLUMN transfer_proof_file TEXT;
+                EXCEPTION WHEN duplicate_column THEN END;
+                BEGIN
+                    ALTER TABLE dss_evaluations ADD COLUMN disbursed_amount VARCHAR(100);
+                EXCEPTION WHEN duplicate_column THEN END;
+                BEGIN
+                    ALTER TABLE dss_evaluations ADD COLUMN disbursement_notes TEXT;
+                EXCEPTION WHEN duplicate_column THEN END;
+                BEGIN
+                    ALTER TABLE dss_evaluations ADD COLUMN termin VARCHAR(100);
+                EXCEPTION WHEN duplicate_column THEN END;
+                BEGIN
                     ALTER TABLE proposals ADD COLUMN file_name TEXT;
                 EXCEPTION WHEN duplicate_column THEN END;
                 BEGIN
@@ -1344,6 +1371,15 @@ def init_db(app):
                 ('mous', 'file_url', 'TEXT'),
                 ('dss_evaluations', 'file_name', 'TEXT'),
                 ('dss_evaluations', 'file_url', 'TEXT'),
+                ('dss_evaluations', 'disbursement_status', 'TEXT DEFAULT "Menunggu Pencairan"'),
+                ('dss_evaluations', 'source_bank', 'TEXT'),
+                ('dss_evaluations', 'recipient_bank', 'TEXT'),
+                ('dss_evaluations', 'transfer_ref', 'TEXT'),
+                ('dss_evaluations', 'transfer_date', 'TEXT'),
+                ('dss_evaluations', 'transfer_proof_file', 'TEXT'),
+                ('dss_evaluations', 'disbursed_amount', 'TEXT'),
+                ('dss_evaluations', 'disbursement_notes', 'TEXT'),
+                ('dss_evaluations', 'termin', 'TEXT'),
                 ('spks', 'file_name', 'TEXT'),
                 ('spks', 'file_url', 'TEXT'),
             ]:

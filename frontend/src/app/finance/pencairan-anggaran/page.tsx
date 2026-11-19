@@ -274,15 +274,15 @@ export default function PencairanAnggaranPage() {
               file_name: item.file_name || `${item.id}_ANGGARAN_PROGRAM.xlsx`,
               file_url: item.file_url,
               evaluation_notes: item.evaluation_notes || 'Telah diverifikasi sesuai standar baku DSS.',
-              disbursement_status: saved ? saved.status : defaultStatus,
-              termin: saved?.termin || 'Pencairan Penuh (100%)',
-              source_bank: saved?.sourceBank || defaultSourceBank,
-              recipient_bank: saved?.recipientBank || `BSI 712-889-1002 a.n. Tim Pelaksana ${item.location || 'Lapangan'}`,
-              transfer_ref: saved?.ref || `TRX-OUT/${item.id.replace('RAB-', '')}/2026`,
-              transfer_date: saved?.date || item.date || '19 Nov 2026',
-              transfer_proof_file: saved?.file || (defaultStatus === 'Dicairkan' ? 'BUKTI_TRANSFER_BANK.pdf' : ''),
-              disbursed_amount: saved?.disbursedAmt || item.estimated_budget || 'Rp 50.000.000',
-              disbursement_notes: saved?.notes || '',
+              disbursement_status: item.disbursement_status || (saved ? saved.status : defaultStatus),
+              termin: item.termin || saved?.termin || 'Pencairan Penuh (100%)',
+              source_bank: item.source_bank || saved?.sourceBank || defaultSourceBank,
+              recipient_bank: item.recipient_bank || saved?.recipientBank || `BSI 712-889-1002 a.n. Tim Pelaksana ${item.location || 'Lapangan'}`,
+              transfer_ref: item.transfer_ref || saved?.ref || `TRX-OUT/${item.id.replace('RAB-', '')}/2026`,
+              transfer_date: item.transfer_date || saved?.date || item.date || '19 Nov 2026',
+              transfer_proof_file: item.transfer_proof_file || saved?.file || (defaultStatus === 'Dicairkan' ? 'BUKTI_TRANSFER_BANK.pdf' : ''),
+              disbursed_amount: item.disbursed_amount || saved?.disbursedAmt || item.estimated_budget || 'Rp 50.000.000',
+              disbursement_notes: item.disbursement_notes || saved?.notes || '',
             }
           })
           setRabList(mapped)
@@ -468,6 +468,21 @@ export default function PencairanAnggaranPage() {
         ? notesInput || `Pencairan dana ${terminInput} telah ditransfer via ${sourceBankInput}.`
         : notesInput || 'Belum dicairkan. Menunggu konfirmasi verifikasi atau penyesuaian jadwal transfer.',
     }
+
+    // Persist directly to backend database
+    api.updateDssDisbursement(selectedRab.id, {
+      disbursement_status: newStatus,
+      termin: updatedItem.termin,
+      source_bank: updatedItem.source_bank,
+      recipient_bank: updatedItem.recipient_bank,
+      transfer_ref: updatedItem.transfer_ref,
+      transfer_date: updatedItem.transfer_date,
+      transfer_proof_file: updatedItem.transfer_proof_file,
+      disbursed_amount: updatedItem.disbursed_amount,
+      disbursement_notes: updatedItem.disbursement_notes,
+    }).catch(() => {
+      // Graceful offline fallback
+    })
 
     setTimeout(() => {
       setRabList((prev) =>

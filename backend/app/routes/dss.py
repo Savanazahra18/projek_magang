@@ -243,6 +243,68 @@ def update_dss_status(dss_id):
         'evaluation': updated
     }), 200
 
+@bp.route('/<dss_id>/disbursement', methods=['POST', 'PUT'])
+def update_dss_disbursement(dss_id):
+    """Update disbursement status, proof of transfer, and bank details for DSS/RAB."""
+    data = request.get_json() or {}
+    disbursement_status = data.get('disbursement_status') or data.get('status') or 'Dicairkan'
+    disbursed_amount = data.get('disbursed_amount') or data.get('disbursedAmount')
+    termin = data.get('termin')
+    source_bank = data.get('source_bank') or data.get('sourceBank')
+    recipient_bank = data.get('recipient_bank') or data.get('recipientBank')
+    transfer_ref = data.get('transfer_ref') or data.get('transferRef')
+    transfer_date = data.get('transfer_date') or data.get('transferDate')
+    transfer_proof_file = data.get('transfer_proof_file') or data.get('transferProofFile') or data.get('file')
+    disbursement_notes = data.get('disbursement_notes') or data.get('notes')
+
+    existing = query_one("SELECT * FROM dss_evaluations WHERE id = ?", (dss_id,))
+    if not existing:
+        return jsonify({'error': f'Data RAB {dss_id} tidak ditemukan.'}), 404
+
+    execute_db("""
+        UPDATE dss_evaluations
+        SET disbursement_status = ?,
+            disbursed_amount = ?,
+            termin = ?,
+            source_bank = ?,
+            recipient_bank = ?,
+            transfer_ref = ?,
+            transfer_date = ?,
+            transfer_proof_file = ?,
+            disbursement_notes = ?,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+    """, (
+        disbursement_status,
+        disbursed_amount or existing.get('estimated_budget'),
+        termin or 'Pencairan Penuh (100%)',
+        source_bank,
+        recipient_bank,
+        transfer_ref,
+        transfer_date,
+        transfer_proof_file,
+        disbursement_notes,
+        dss_id
+    ))
+
+    # Audit log to dashboard_activities
+    title = existing.get('title', dss_id)
+    execute_db("""
+        INSERT INTO dashboard_activities (title, meta, time_ago, icon)
+        VALUES (?, ?, ?, ?)
+    """, (
+        f'Pencairan Anggaran {dss_id}: {disbursement_status}',
+        f'{title} • {disbursed_amount or existing.get("estimated_budget")} via {source_bank or "Bank"}',
+        'Baru saja',
+        'checkCircle' if disbursement_status == 'Dicairkan' else 'clock'
+    ))
+
+    updated = query_one("SELECT * FROM dss_evaluations WHERE id = ?", (dss_id,))
+    return jsonify({
+        'message': f'Pencairan dana untuk RAB {dss_id} berhasil dicatat di database.',
+        'evaluation': updated
+    }), 200
+
 @bp.route('/<dss_id>', methods=['DELETE'])
 def delete_dss(dss_id):
     """Delete a DSS evaluation."""

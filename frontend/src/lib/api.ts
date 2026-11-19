@@ -136,6 +136,11 @@ export const api = {
     }),
   deleteDssEvaluation: (id: string) =>
     apiRequest(`/api/dss/${id}`, { method: 'DELETE' }),
+  updateDssDisbursement: (id: string, data: Record<string, any>) =>
+    apiRequest(`/api/dss/${id}/disbursement`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
 
   // MIPro (Memo Internal Project)
   getMiproList: (params?: Record<string, string>) => {
