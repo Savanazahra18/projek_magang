@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useMemo, useEffect, ChangeEvent, useRef } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
-import { useDashboard } from '@/context/DashboardContext'
+import { useRouter } from 'next/navigation'
 import { api } from '@/lib/api'
 import { Icon } from '@/components/common/Icons'
 
@@ -190,47 +190,17 @@ const FALLBACK_RAB_DATA: RabDisbursementItem[] = [
 ]
 
 export default function PencairanAnggaranPage() {
-  const { notify } = useDashboard()
+  const router = useRouter()
 
   const [rabList, setRabList] = useState<RabDisbursementItem[]>(FALLBACK_RAB_DATA)
-  const [selectedRab, setSelectedRab] = useState<RabDisbursementItem | null>(null)
   const [divisionFilter, setDivisionFilter] = useState<string>('Semua')
   const [statusFilter, setStatusFilter] = useState<'Semua' | DisbursementStatus>('Semua')
   const [searchQuery, setSearchQuery] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
-  // Decision State: 'cairkan' (Ya, proses transfer) or 'tunda' (Tidak / Tunda)
-  const [disburseDecision, setDisburseDecision] = useState<'cairkan' | 'tunda'>('tunda')
-
-  // Finance Disbursement Form State
-  const [disbursedAmountInput, setDisbursedAmountInput] = useState('')
-  const [terminInput, setTerminInput] = useState('Pencairan Penuh (100%)')
-  const [sourceBankInput, setSourceBankInput] = useState('Bank Mandiri - Kas Kemitraan (131-00-981273-1)')
-  const [recipientBankInput, setRecipientBankInput] = useState('')
-  const [transferRefInput, setTransferRefInput] = useState('')
-  const [transferDateInput, setTransferDateInput] = useState('19 Nov 2026')
-  const [notesInput, setNotesInput] = useState('')
-  const [uploadedProofFile, setUploadedProofFile] = useState<{ name: string; size: string; type: string } | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
-
   // Load DSS (RAB) data from API & reconcile with localStorage
   useEffect(() => {
-    let savedStatusMap: Record<
-      string,
-      {
-        status: DisbursementStatus
-        termin?: string
-        sourceBank?: string
-        recipientBank?: string
-        ref?: string
-        date?: string
-        file?: string
-        disbursedAmt?: string
-        notes?: string
-      }
-    > = {}
+    let savedStatusMap: Record<string, any> = {}
 
     try {
       const stored = localStorage.getItem('finance_rab_disbursement_status')
@@ -249,7 +219,7 @@ export default function PencairanAnggaranPage() {
           const mapped: RabDisbursementItem[] = list.map((item: any, idx: number) => {
             const saved = savedStatusMap[item.id]
             const defaultStatus: DisbursementStatus =
-              idx % 2 === 0 ? 'Menunggu Pencairan' : 'Dicairkan'
+              item.disbursement_status || (saved ? saved.status : idx % 2 === 0 ? 'Menunggu Pencairan' : 'Dicairkan')
 
             const defaultSourceBank =
               item.division?.includes('Tanggap Darurat') || item.category?.includes('Kemanusiaan')
@@ -403,124 +373,6 @@ export default function PencairanAnggaranPage() {
     })
   }, [rabList, divisionFilter, statusFilter, searchQuery])
 
-  // Open Action Modal
-  const handleOpenAction = (item: RabDisbursementItem) => {
-    setSelectedRab(item)
-    // If already disbursed, default to 'cairkan'
-    const isAlreadyDisbursed = item.disbursement_status === 'Dicairkan'
-    setDisburseDecision(isAlreadyDisbursed ? 'cairkan' : 'tunda')
-
-    // Prefill form
-    setDisbursedAmountInput(item.disbursed_amount || item.estimated_budget)
-    setTerminInput(item.termin || 'Pencairan Penuh (100%)')
-    setSourceBankInput(item.source_bank || 'Bank Mandiri - Kas Kemitraan (131-00-981273-1)')
-    setRecipientBankInput(item.recipient_bank || `BSI 712-889-1002 a.n. Tim Pelaksana ${item.location}`)
-    setTransferRefInput(item.transfer_ref || `TRX-OUT/${item.id.replace('RAB-', '')}/2026`)
-    setTransferDateInput(item.transfer_date || '19 Nov 2026')
-    setNotesInput(item.disbursement_notes || '')
-
-    if (item.transfer_proof_file) {
-      setUploadedProofFile({
-        name: item.transfer_proof_file,
-        size: '1.25 MB',
-        type: 'PDF',
-      })
-    } else {
-      setUploadedProofFile(null)
-    }
-  }
-
-  // Handle File Upload Change
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      const sizeMb = (file.size / (1024 * 1024)).toFixed(2)
-      const isPdf = file.name.toLowerCase().endsWith('.pdf')
-      setUploadedProofFile({
-        name: file.name,
-        size: `${sizeMb} MB`,
-        type: isPdf ? 'PDF' : 'IMAGE',
-      })
-    }
-  }
-
-  // Save Disbursement Decision
-  const handleSaveDecision = (overrideStatus?: DisbursementStatus) => {
-    if (!selectedRab) return
-
-    setIsSubmitting(true)
-    const isDisbursing = overrideStatus ? overrideStatus === 'Dicairkan' : disburseDecision === 'cairkan'
-    const newStatus: DisbursementStatus = overrideStatus || (isDisbursing ? 'Dicairkan' : 'Menunggu Pencairan')
-
-    const updatedItem: RabDisbursementItem = {
-      ...selectedRab,
-      disbursement_status: newStatus,
-      termin: terminInput || selectedRab.termin,
-      source_bank: sourceBankInput || selectedRab.source_bank,
-      recipient_bank: recipientBankInput || selectedRab.recipient_bank,
-      transfer_ref: transferRefInput || selectedRab.transfer_ref,
-      transfer_date: transferDateInput || selectedRab.transfer_date,
-      transfer_proof_file: isDisbursing
-        ? uploadedProofFile?.name || selectedRab.transfer_proof_file || 'BUKTI_TRANSFER_BANK.pdf'
-        : '',
-      disbursed_amount: isDisbursing ? disbursedAmountInput || selectedRab.estimated_budget : '',
-      disbursement_notes: isDisbursing
-        ? notesInput || `Pencairan dana ${terminInput} telah ditransfer via ${sourceBankInput}.`
-        : notesInput || 'Belum dicairkan. Menunggu konfirmasi verifikasi atau penyesuaian jadwal transfer.',
-    }
-
-    // Persist directly to backend database
-    api.updateDssDisbursement(selectedRab.id, {
-      disbursement_status: newStatus,
-      termin: updatedItem.termin,
-      source_bank: updatedItem.source_bank,
-      recipient_bank: updatedItem.recipient_bank,
-      transfer_ref: updatedItem.transfer_ref,
-      transfer_date: updatedItem.transfer_date,
-      transfer_proof_file: updatedItem.transfer_proof_file,
-      disbursed_amount: updatedItem.disbursed_amount,
-      disbursement_notes: updatedItem.disbursement_notes,
-    }).catch(() => {
-      // Graceful offline fallback
-    })
-
-    setTimeout(() => {
-      setRabList((prev) =>
-        prev.map((item) => (item.id === selectedRab.id ? updatedItem : item))
-      )
-      setSelectedRab(null)
-
-      // Persist in localStorage
-      try {
-        const stored = localStorage.getItem('finance_rab_disbursement_status')
-        const map = stored ? JSON.parse(stored) : {}
-        map[selectedRab.id] = {
-          status: newStatus,
-          termin: updatedItem.termin,
-          sourceBank: updatedItem.source_bank,
-          recipientBank: updatedItem.recipient_bank,
-          ref: updatedItem.transfer_ref,
-          date: updatedItem.transfer_date,
-          file: updatedItem.transfer_proof_file,
-          disbursedAmt: updatedItem.disbursed_amount,
-          notes: updatedItem.disbursement_notes,
-        }
-        localStorage.setItem('finance_rab_disbursement_status', JSON.stringify(map))
-      } catch {
-        // ignore
-      }
-
-      setIsSubmitting(false)
-      if (newStatus === 'Dicairkan') {
-        notify(`Sukses! Pencairan dana ${selectedRab.id} (${updatedItem.disbursed_amount}) berhasil dicatat & dibukukan!`)
-      } else if (newStatus === 'Perlu Konfirmasi') {
-        notify(`Pencairan untuk ${selectedRab.id} ditandai sebagai: Perlu Konfirmasi.`)
-      } else {
-        notify(`Status ${selectedRab.id} disimpan sebagai: Belum Dicairkan.`)
-      }
-    }, 400)
-  }
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', paddingBottom: '30px' }}>
       {/* Header */}
@@ -562,7 +414,7 @@ export default function PencairanAnggaranPage() {
               </span>
             </div>
             <p style={{ fontSize: '13px', color: '#697879', margin: '6px 0 0' }}>
-              Daftar Rencana Anggaran Biaya (RAB / DSS) yang telah disahkan. Klik tombol <strong>Aksi</strong> untuk memeriksa rincian anggaran program, menentukan status pencairan, dan mengunggah berkas bukti transfer dana keluar.
+              Daftar Rencana Anggaran Biaya (RAB / DSS) yang telah disahkan. Klik tombol <strong>Aksi</strong> untuk membuka <strong>halaman detail resmi</strong>, mengunduh berkas RAB, menentukan status pencairan, dan mengunggah berkas bukti transfer dana keluar.
             </p>
           </div>
         </div>
@@ -826,9 +678,12 @@ export default function PencairanAnggaranPage() {
                     >
                       {/* ID RAB & Program */}
                       <td style={{ padding: '12px 16px', verticalAlign: 'middle' }}>
-                        <strong style={{ color: '#078780', fontSize: '12.5px', display: 'block' }}>
+                        <Link
+                          href={`/finance/pencairan-anggaran/${encodeURIComponent(item.id)}`}
+                          style={{ color: '#078780', fontSize: '12.5px', fontWeight: 700, textDecoration: 'none', display: 'block' }}
+                        >
                           {item.id}
-                        </strong>
+                        </Link>
                         <span style={{ fontSize: '11px', color: '#94a3b8' }}>
                           Ref: {item.program_id}
                         </span>
@@ -836,9 +691,12 @@ export default function PencairanAnggaranPage() {
 
                       {/* Judul RAB & File Info */}
                       <td style={{ padding: '12px 16px', verticalAlign: 'middle' }}>
-                        <span style={{ fontWeight: 600, color: '#172324', display: 'block', fontSize: '13px' }}>
+                        <Link
+                          href={`/finance/pencairan-anggaran/${encodeURIComponent(item.id)}`}
+                          style={{ fontWeight: 600, color: '#172324', textDecoration: 'none', display: 'block', fontSize: '13px' }}
+                        >
                           {item.title}
-                        </span>
+                        </Link>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '3px' }}>
                           <span style={{ fontSize: '11px', color: '#697879' }}>
                             📅 {item.date}
@@ -909,14 +767,10 @@ export default function PencairanAnggaranPage() {
                         </span>
                       </td>
 
-                      {/* Aksi Button */}
+                      {/* Aksi Button: Navigates to dedicated detail page */}
                       <td style={{ padding: '12px 14px', textAlign: 'center', verticalAlign: 'middle' }}>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleOpenAction(item)
-                          }}
+                        <Link
+                          href={`/finance/pencairan-anggaran/${encodeURIComponent(item.id)}`}
                           style={{
                             display: 'inline-flex',
                             alignItems: 'center',
@@ -929,13 +783,14 @@ export default function PencairanAnggaranPage() {
                             fontSize: '12px',
                             fontWeight: 600,
                             cursor: 'pointer',
+                            textDecoration: 'none',
                             boxShadow: '0 1px 2px rgba(7, 135, 128, 0.2)',
                             transition: 'all 0.15s ease',
                           }}
                         >
                           <Icon name="fileText" size={13} />
                           <span>Aksi</span>
-                        </button>
+                        </Link>
                       </td>
                     </tr>
                   )
@@ -945,764 +800,6 @@ export default function PencairanAnggaranPage() {
           </table>
         </div>
       </div>
-
-      {/* ==========================================================
-          MODAL DETAIL AKSI: FORM RAB/DSS + EKSEKUSI PENCAIRAN
-          ========================================================== */}
-      {selectedRab && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(15, 23, 42, 0.6)',
-            zIndex: 1000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px',
-            backdropFilter: 'blur(2px)',
-          }}
-          onClick={() => setSelectedRab(null)}
-        >
-          <div
-            style={{
-              background: '#ffffff',
-              borderRadius: '14px',
-              width: '100%',
-              maxWidth: '1020px',
-              maxHeight: '92vh',
-              overflowY: 'auto',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div
-              style={{
-                padding: '18px 24px',
-                borderBottom: '1px solid #edf1f1',
-                background: '#fafcfc',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span
-                    style={{
-                      padding: '2px 8px',
-                      borderRadius: '4px',
-                      background: '#e6f7f2',
-                      color: '#078780',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                    }}
-                  >
-                    {selectedRab.id}
-                  </span>
-                  <span style={{ fontSize: '13px', color: '#697879' }}>
-                    • Pengesahan RAB: {selectedRab.date}
-                  </span>
-                </div>
-                <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#172324', margin: '4px 0 0' }}>
-                  Pemeriksaan &amp; Eksekusi Transfer Pencairan Anggaran (RAB)
-                </h2>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSelectedRab(null)}
-                style={{
-                  border: 'none',
-                  background: 'none',
-                  fontSize: '22px',
-                  color: '#889899',
-                  cursor: 'pointer',
-                  padding: '4px',
-                }}
-                title="Tutup dialog"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Modal Body: 2-Column Grid */}
-            <div
-              style={{
-                padding: '24px',
-                display: 'grid',
-                gridTemplateColumns: '1.15fr 1.1fr',
-                gap: '24px',
-                alignItems: 'start',
-              }}
-            >
-              {/* ========================================================
-                  KOLOM KIRI: ISI FORM / DOKUMEN DSS (RAB)
-                  ======================================================== */}
-              <div
-                style={{
-                  background: '#f8fafa',
-                  borderRadius: '10px',
-                  border: '1px solid #e3eaea',
-                  padding: '18px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '14px',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #edf1f1', paddingBottom: '10px' }}>
-                  <span style={{ fontSize: '16px' }}>📋</span>
-                  <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#172324' }}>
-                    Data Rencana Anggaran Biaya (DSS / RAB)
-                  </span>
-                </div>
-
-                {/* Banner Highlight Nominal RAB */}
-                <div
-                  style={{
-                    background: '#ffffff',
-                    border: '1.5px solid #078780',
-                    borderRadius: '8px',
-                    padding: '12px 14px',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <div>
-                    <span style={{ fontSize: '11px', color: '#697879', fontWeight: 600, display: 'block' }}>
-                      NOMINAL ANGGARAN RAB / DSS:
-                    </span>
-                    <strong style={{ fontSize: '20px', color: '#078780', fontWeight: 700 }}>
-                      {selectedRab.estimated_budget}
-                    </strong>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <span
-                      style={{
-                        padding: '3px 8px',
-                        borderRadius: '4px',
-                        background: '#edf6f5',
-                        color: '#078780',
-                        fontSize: '11px',
-                        fontWeight: 700,
-                        display: 'inline-block',
-                      }}
-                    >
-                      {selectedRab.division}
-                    </span>
-                    <span style={{ fontSize: '11px', color: '#697879', display: 'block', marginTop: '3px' }}>
-                      Kategori: {selectedRab.category}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Detail Fields */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12.5px' }}>
-                  <div>
-                    <span style={{ color: '#697879', fontSize: '11px', display: 'block' }}>
-                      Judul Program &amp; Kegiatan:
-                    </span>
-                    <strong style={{ color: '#172324' }}>{selectedRab.title}</strong>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                    <div>
-                      <span style={{ color: '#697879', fontSize: '11px', display: 'block' }}>
-                        ID Program Induk:
-                      </span>
-                      <span style={{ color: '#334445', fontWeight: 600 }}>{selectedRab.program_id}</span>
-                    </div>
-                    <div>
-                      <span style={{ color: '#697879', fontSize: '11px', display: 'block' }}>
-                        Target Penerima Manfaat:
-                      </span>
-                      <span style={{ color: '#334445', fontWeight: 600 }}>{selectedRab.beneficiaries}</span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <span style={{ color: '#697879', fontSize: '11px', display: 'block' }}>
-                      Wilayah &amp; Lokasi Pelaksanaan:
-                    </span>
-                    <span style={{ color: '#334445' }}>
-                      📍 {selectedRab.location}, {selectedRab.province}
-                    </span>
-                  </div>
-
-                  {/* Dokumen Lampiran RAB */}
-                  <div>
-                    <span style={{ color: '#697879', fontSize: '11px', display: 'block', marginBottom: '4px' }}>
-                      Berkas Rincian RAB yang Disahkan:
-                    </span>
-                    <div
-                      style={{
-                        background: '#ffffff',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        padding: '8px 12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ color: '#078780' }}>
-                          <Icon name="fileText" size={16} />
-                        </span>
-                        <div>
-                          <strong style={{ fontSize: '12px', color: '#1e293b', display: 'block' }}>
-                            {selectedRab.file_name || `${selectedRab.id}_RAB_RESMI.xlsx`}
-                          </strong>
-                          <span style={{ fontSize: '10.5px', color: '#64748b' }}>
-                            {selectedRab.file_type} • {selectedRab.file_size}
-                          </span>
-                        </div>
-                      </div>
-                      <span
-                        style={{
-                          fontSize: '11px',
-                          color: '#078780',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Unduh
-                      </span>
-                    </div>
-                  </div>
-
-                  {selectedRab.evaluation_notes && (
-                    <div>
-                      <span style={{ color: '#697879', fontSize: '11px', display: 'block' }}>
-                        Catatan Telaah &amp; Rekomendasi Komite DSS:
-                      </span>
-                      <p style={{ margin: '3px 0 0', color: '#445556', lineHeight: 1.45, fontSize: '12px', background: '#fff', padding: '8px 10px', borderRadius: '6px', border: '1px solid #edf2f2' }}>
-                        {selectedRab.evaluation_notes}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* ========================================================
-                  KOLOM KANAN: KEPUTUSAN PENCAIRAN & FORM TRANSFER UANG
-                  ======================================================== */}
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px',
-                }}
-              >
-                {/* Decision Selector: Cairkan atau Tunda */}
-                <div
-                  style={{
-                    background: '#ffffff',
-                    border: '1px solid #dfe6e7',
-                    borderRadius: '10px',
-                    padding: '16px',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
-                  }}
-                >
-                  <label
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 700,
-                      color: '#172324',
-                      display: 'block',
-                      marginBottom: '8px',
-                    }}
-                  >
-                    Keputusan Eksekusi Pencairan Dana:
-                  </label>
-                  <p style={{ fontSize: '11.5px', color: '#697879', margin: '0 0 12px 0' }}>
-                    Tentukan apakah dana untuk pelaksanaan RAB ini siap dicairkan dan ditransfer oleh Divisi Keuangan.
-                  </p>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                    <button
-                      type="button"
-                      onClick={() => setDisburseDecision('cairkan')}
-                      style={{
-                        padding: '10px 14px',
-                        borderRadius: '8px',
-                        border: disburseDecision === 'cairkan' ? '2px solid #078780' : '1px solid #cbd5e1',
-                        background: disburseDecision === 'cairkan' ? '#e6f7f2' : '#ffffff',
-                        color: disburseDecision === 'cairkan' ? '#057a6e' : '#475569',
-                        fontSize: '12.5px',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        transition: 'all 0.15s ease',
-                      }}
-                    >
-                      <Icon name="check" size={15} />
-                      <span>Cairkan Anggaran</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setDisburseDecision('tunda')}
-                      style={{
-                        padding: '10px 14px',
-                        borderRadius: '8px',
-                        border: disburseDecision === 'tunda' ? '2px solid #ef4444' : '1px solid #cbd5e1',
-                        background: disburseDecision === 'tunda' ? '#fef2f2' : '#ffffff',
-                        color: disburseDecision === 'tunda' ? '#b91c1c' : '#475569',
-                        fontSize: '12.5px',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        transition: 'all 0.15s ease',
-                      }}
-                    >
-                      <Icon name="close" size={13} />
-                      <span>Tunda / Belum Dicairkan</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* ========================================================
-                    KONDISIONAL: JIKA "TUNDA / BELUM DICAIRKAN", FORM KEUANGAN
-                    TIDAK DITAMPILKAN SAMA SEKALI
-                    ======================================================== */}
-                {disburseDecision === 'tunda' ? (
-                  <div
-                    style={{
-                      background: '#fffbeb',
-                      border: '1px solid #fde68a',
-                      borderRadius: '10px',
-                      padding: '18px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '12px',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                      <span style={{ fontSize: '20px' }}>ℹ️</span>
-                      <div>
-                        <strong style={{ fontSize: '13px', color: '#92400e', display: 'block' }}>
-                          Keputusan: Tunda / Belum Dicairkan
-                        </strong>
-                        <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#78350f', lineHeight: 1.45 }}>
-                          Formulir unggah bukti sudah transfer uang <strong>tidak ditampilkan</strong> karena Anda memilih opsi <em>Tunda / Belum Dicairkan</em>.
-                        </p>
-                      </div>
-                    </div>
-
-                    <p style={{ margin: 0, fontSize: '11.5px', color: '#92400e' }}>
-                      Pilih tombol <strong>"Cairkan Anggaran"</strong> di atas jika uang telah siap ditransfer dan Anda hendak mengunggah slip / bukti transfer bank.
-                    </p>
-
-                    <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
-                      <button
-                        type="button"
-                        disabled={isSubmitting}
-                        onClick={() => handleSaveDecision('Menunggu Pencairan')}
-                        style={{
-                          flex: 1,
-                          padding: '9px 14px',
-                          borderRadius: '7px',
-                          border: 'none',
-                          background: '#d97706',
-                          color: '#ffffff',
-                          fontSize: '12px',
-                          fontWeight: 600,
-                          cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                        }}
-                      >
-                        {isSubmitting ? 'Menyimpan...' : 'Simpan Status Belum Dicairkan'}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRab(null)}
-                        style={{
-                          padding: '9px 14px',
-                          borderRadius: '7px',
-                          border: '1px solid #cbd5e1',
-                          background: '#ffffff',
-                          color: '#475569',
-                          fontSize: '12px',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Batal
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  /* ========================================================
-                      KONDISIONAL: JIKA "CAIRKAN ANGGARAN", TAMPILKAN FORM
-                      LENGKAP UNTUK BAGIAN KEUANGAN (UNGGAH BUKTI SUDAH TRANSFER,
-                      NOMINAL, BANK ASAL, BANK TUJUAN, REF, DLL)
-                      ======================================================== */
-                  <div
-                    style={{
-                      background: '#ffffff',
-                      border: '1px solid #078780',
-                      borderRadius: '10px',
-                      padding: '18px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '14px',
-                      boxShadow: '0 4px 12px rgba(7, 135, 128, 0.08)',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #edf1f1', paddingBottom: '10px' }}>
-                      <span style={{ fontSize: '16px' }}>💸</span>
-                      <strong style={{ fontSize: '13.5px', color: '#078780' }}>
-                        Form Keuangan: Unggah Bukti Transfer &amp; Eksekusi Pencairan
-                      </strong>
-                    </div>
-
-                    {/* 1. Nominal yang Ditransfer / Dicairkan */}
-                    <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
-                        Nominal yang Ditransfer / Dicairkan (Rp):
-                      </label>
-                      <input
-                        type="text"
-                        value={disbursedAmountInput}
-                        onChange={(e) => setDisbursedAmountInput(e.target.value)}
-                        placeholder="Contoh: Rp 82.500.000"
-                        style={{
-                          width: '100%',
-                          padding: '8px 12px',
-                          borderRadius: '6px',
-                          border: '1px solid #078780',
-                          fontSize: '13px',
-                          fontWeight: 700,
-                          color: '#078780',
-                          outline: 'none',
-                          background: '#f9fdfc',
-                        }}
-                      />
-                      <small style={{ fontSize: '11px', color: '#697879', display: 'block', marginTop: '2px' }}>
-                        Pagu pagu total pengajuan RAB: {selectedRab.estimated_budget}
-                      </small>
-                    </div>
-
-                    {/* 2. Pilihan Termin Pencairan */}
-                    <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
-                        Tahap / Termin Pencairan:
-                      </label>
-                      <select
-                        value={terminInput}
-                        onChange={(e) => setTerminInput(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '8px 10px',
-                          borderRadius: '6px',
-                          border: '1px solid #cbd5e1',
-                          fontSize: '12.5px',
-                          outline: 'none',
-                          background: '#fff',
-                        }}
-                      >
-                        <option value="Pencairan Penuh (100%)">Pencairan Penuh (100%)</option>
-                        <option value="Termin 1 (Uang Muka 50%)">Termin 1 (Uang Muka 50%)</option>
-                        <option value="Termin 2 (Pelunasan 50%)">Termin 2 (Pelunasan 50%)</option>
-                        <option value="Termin 1 (Uang Muka 30%)">Termin 1 (Uang Muka 30%)</option>
-                        <option value="Termin 2 (Termin Lanjutan 40%)">Termin 2 (Termin Lanjutan 40%)</option>
-                        <option value="Termin 3 (Pelunasan 30%)">Termin 3 (Pelunasan 30%)</option>
-                      </select>
-                    </div>
-
-                    {/* 3. Rekening Sumber Kas Keluar Yayasan */}
-                    <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
-                        Rekening Asal Sumber Dana Keluar (Kas Yayasan):
-                      </label>
-                      <select
-                        value={sourceBankInput}
-                        onChange={(e) => setSourceBankInput(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '8px 10px',
-                          borderRadius: '6px',
-                          border: '1px solid #cbd5e1',
-                          fontSize: '12.5px',
-                          outline: 'none',
-                          background: '#fff',
-                        }}
-                      >
-                        <option value="Bank Mandiri - Kas Kemitraan (131-00-981273-1)">
-                          Bank Mandiri - Kas Kemitraan (131-00-981273-1)
-                        </option>
-                        <option value="BSI - Rekening Campaign (709-112-4456)">
-                          BSI - Rekening Campaign (709-112-4456)
-                        </option>
-                        <option value="BCA - Penyaluran Zakat & Infaq (283-889-1002)">
-                          BCA - Penyaluran Zakat &amp; Infaq (283-889-1002)
-                        </option>
-                        <option value="BSI - Kas Kedaruratan & Tanggap Darurat (711-200-3344)">
-                          BSI - Kas Kedaruratan &amp; Tanggap Darurat (711-200-3344)
-                        </option>
-                      </select>
-                    </div>
-
-                    {/* 4. Rekening Penerima / PIC Lapangan */}
-                    <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
-                        Rekening Tujuan / Penanggung Jawab Lapangan:
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Contoh: BSI 712-889-1002 a.n. Tim Pelaksana Lapangan"
-                        value={recipientBankInput}
-                        onChange={(e) => setRecipientBankInput(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '8px 12px',
-                          borderRadius: '6px',
-                          border: '1px solid #cbd5e1',
-                          fontSize: '12px',
-                          outline: 'none',
-                        }}
-                      />
-                    </div>
-
-                    {/* 5. FORM UNGGAH BUKTI SUDAH TRANSFER UANG */}
-                    <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '6px' }}>
-                        Unggah Bukti Sudah Transfer Uang (Slip Transfer / Mutasi Keluar / Struk Bank):
-                      </label>
-
-                      {/* Dropzone Area */}
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        accept=".pdf,.png,.jpg,.jpeg"
-                        style={{ display: 'none' }}
-                        onChange={handleFileChange}
-                      />
-
-                      <div
-                        onClick={() => fileInputRef.current?.click()}
-                        style={{
-                          border: '2px dashed #a5d3ce',
-                          borderRadius: '8px',
-                          padding: '16px',
-                          textAlign: 'center',
-                          cursor: 'pointer',
-                          background: '#f6fbfa',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          gap: '6px',
-                          transition: 'all 0.15s ease',
-                        }}
-                      >
-                        <span style={{ fontSize: '24px', color: '#078780' }}>
-                          <Icon name="upload" size={22} />
-                        </span>
-                        <span style={{ fontSize: '12px', fontWeight: 600, color: '#172324' }}>
-                          {uploadedProofFile ? 'Klik untuk mengganti berkas bukti transfer' : 'Klik untuk memilih bukti transfer uang pencairan'}
-                        </span>
-                        <span style={{ fontSize: '11px', color: '#7b8c8d' }}>
-                          Mendukung berkas PDF, JPG, atau PNG (maks. 10 MB)
-                        </span>
-                      </div>
-
-                      {/* Chip Bukti Terunggah */}
-                      {uploadedProofFile && (
-                        <div
-                          style={{
-                            marginTop: '8px',
-                            padding: '8px 12px',
-                            borderRadius: '6px',
-                            background: '#e6f7f2',
-                            border: '1px solid #bcece4',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                          }}
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ color: '#078780' }}>
-                              <Icon name="checkCircle" size={16} />
-                            </span>
-                            <div>
-                              <strong style={{ fontSize: '12px', color: '#057a6e', display: 'block' }}>
-                                {uploadedProofFile.name}
-                              </strong>
-                              <span style={{ fontSize: '10.5px', color: '#557d76' }}>
-                                {uploadedProofFile.type} • {uploadedProofFile.size}
-                              </span>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setUploadedProofFile(null)
-                            }}
-                            style={{
-                              border: 'none',
-                              background: 'none',
-                              color: '#dc2626',
-                              fontSize: '11.5px',
-                              fontWeight: 600,
-                              cursor: 'pointer',
-                              padding: '2px 6px',
-                            }}
-                          >
-                            Hapus
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* 6. No. Referensi Transfer & Tanggal */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px' }}>
-                      <div>
-                        <label style={{ fontSize: '11.5px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
-                          No. Referensi / Kliring Bank:
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Contoh: TRX-OUT/202611/0892"
-                          value={transferRefInput}
-                          onChange={(e) => setTransferRefInput(e.target.value)}
-                          style={{
-                            width: '100%',
-                            padding: '7px 10px',
-                            borderRadius: '6px',
-                            border: '1px solid #cbd5e1',
-                            fontSize: '12px',
-                            outline: 'none',
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <label style={{ fontSize: '11.5px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
-                          Tanggal Transfer:
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Contoh: 19 Nov 2026"
-                          value={transferDateInput}
-                          onChange={(e) => setTransferDateInput(e.target.value)}
-                          style={{
-                            width: '100%',
-                            padding: '7px 10px',
-                            borderRadius: '6px',
-                            border: '1px solid #cbd5e1',
-                            fontSize: '12px',
-                            outline: 'none',
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* 7. Catatan Pencairan Keuangan */}
-                    <div>
-                      <label style={{ fontSize: '11.5px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
-                        Catatan Pencairan Kasir / Keuangan:
-                      </label>
-                      <textarea
-                        rows={2}
-                        placeholder="Contoh: Dana termin 1 telah ditransfer via Bank Mandiri untuk biaya operasional awal."
-                        value={notesInput}
-                        onChange={(e) => setNotesInput(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '7px 10px',
-                          borderRadius: '6px',
-                          border: '1px solid #cbd5e1',
-                          fontSize: '12px',
-                          outline: 'none',
-                          resize: 'vertical',
-                          fontFamily: 'inherit',
-                        }}
-                      />
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div style={{ display: 'flex', gap: '8px', paddingTop: '8px', borderTop: '1px solid #edf1f1' }}>
-                      <button
-                        type="button"
-                        disabled={isSubmitting}
-                        onClick={() => handleSaveDecision('Dicairkan')}
-                        style={{
-                          flex: 1,
-                          padding: '10px 14px',
-                          borderRadius: '7px',
-                          border: 'none',
-                          background: '#078780',
-                          color: '#ffffff',
-                          fontSize: '12.5px',
-                          fontWeight: 600,
-                          cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 4px rgba(7, 135, 128, 0.25)',
-                        }}
-                      >
-                        <Icon name="check" size={14} />
-                        <span>{isSubmitting ? 'Menyimpan...' : 'Konfirmasi & Bukukan Pencairan Dana'}</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        disabled={isSubmitting}
-                        onClick={() => handleSaveDecision('Perlu Konfirmasi')}
-                        style={{
-                          padding: '9px 12px',
-                          borderRadius: '7px',
-                          border: '1px solid #f59e0b',
-                          background: '#fffbeb',
-                          color: '#b45309',
-                          fontSize: '12px',
-                          fontWeight: 600,
-                          cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                        }}
-                      >
-                        Perlu Konfirmasi
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRab(null)}
-                        style={{
-                          padding: '9px 12px',
-                          borderRadius: '7px',
-                          border: '1px solid #cbd5e1',
-                          background: '#ffffff',
-                          color: '#475569',
-                          fontSize: '12px',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Tutup
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
